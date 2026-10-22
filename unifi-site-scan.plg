@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "unifi-site-scan">
 <!ENTITY author      "KlimasTech">
-<!ENTITY version     "2026.10.22">
+<!ENTITY version     "2026.10.22.2">
 <!ENTITY launch      "Utilities/unifi-site-scan">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg">
 <!ENTITY packageURL  "https://github.com/KlimasTech/unifi-site-scan/releases/download/&version;/unifi-site-scan-&version;.txz">
-<!ENTITY packageMD5  "fa82dc96c8c8e16ed47c03624c053e1c">
+<!ENTITY packageMD5  "a10830f302e91a81be546b3e63a00728">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
 <!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
 ]>
@@ -25,6 +25,10 @@
 
 <CHANGES>
 ### &version;
+- Dodano kafelek na głównym Dashboardzie unRAID (zgodnie ze standardem innych pluginów: ikona ⚙️ w rogu linkuje do Ustawień)
+- Utwardzono scripts/save.php i scripts/scan.php na błędy PHP — zawsze zwracają poprawny JSON zamiast pustej odpowiedzi (naprawia "Unexpected end of JSON input" po zapisie ustawień)
+
+### 2026.10.22
 - Pierwsze wydanie: dashboard site/SSID/klientów UniFi, ustawienia połączenia, wybór widocznych site/SSID
 </CHANGES>
 

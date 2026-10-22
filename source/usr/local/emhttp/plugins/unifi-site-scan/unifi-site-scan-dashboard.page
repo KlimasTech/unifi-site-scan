@@ -1,0 +1,119 @@
+Menu="Dashboard"
+---
+<?php
+$plugin = 'unifi-site-scan';
+$unraidVersionFile = '/etc/unraid-version';
+$isResponsive = true;
+if (file_exists($unraidVersionFile)) {
+    $v = @parse_ini_file($unraidVersionFile);
+    if (is_array($v) && isset($v['version'])) {
+        $isResponsive = version_compare($v['version'], '7.2.0-beta', '>=');
+    }
+}
+?>
+<style>
+.uss-tile-body { padding: 4px 2px 10px; }
+.uss-tile-stats { display: flex; gap: 10px; margin-bottom: 10px; }
+.uss-tile-stat { flex: 1; background: rgba(90,176,255,.08); border: 1px solid rgba(90,176,255,.18);
+  border-radius: 8px; padding: 8px 10px; text-align: center; }
+.uss-tile-stat .num { font-size: 20px; font-weight: 700; color: #5ab0ff; line-height: 1.1; }
+.uss-tile-stat .lbl { font-size: 10.5px; color: #8993a4; text-transform: uppercase; letter-spacing: .03em; margin-top: 2px; }
+.uss-tile-ssids { display: flex; flex-wrap: wrap; gap: 6px; }
+.uss-tile-ssid-pill { background: #232b37; color: #aab3c2; font-size: 11px; padding: 3px 9px; border-radius: 10px; }
+.uss-tile-ssid-pill b { color: #cfe3ff; }
+.uss-tile-empty, .uss-tile-error { font-size: 12px; color: #8993a4; padding: 6px 2px; }
+.uss-tile-error { color: #ff8080; }
+.uss-tile-updated { font-size: 10.5px; color: #6b7585; margin-top: 8px; text-align: right; }
+</style>
+
+<tbody title='<?=$plugin?>'>
+  <tr>
+    <td>
+      <span class='tile-header'>
+        <span class='tile-header-left'>
+          <i class='fa fa-wifi f32'></i>
+          <div class='section'>
+            <? if ($isResponsive): ?>
+              <h3 class='tile-header-main'>UniFi Site Scan</h3>
+              <span id='uss-tile-subtitle'>Ładowanie…</span>
+            <? else: ?>
+              UniFi Site Scan<br>
+              <span id='uss-tile-subtitle'>Ładowanie…</span><br>
+            <? endif; ?>
+          </div>
+        </span>
+        <span class='tile-header-right'>
+          <span class='tile-ctrl'>
+            <span class='fa fa-refresh hand' title='Odśwież' onclick='ussTileRefresh()'></span>
+          </span>
+          <span class='tile-header-right-controls'>
+            <a href='/Settings/<?=$plugin?>' title='Ustawienia'><i class='fa fa-cog control'></i></a>
+          </span>
+        </span>
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class='uss-tile-body' id='uss-tile-body'>
+        <div class='uss-tile-empty'>Ładowanie danych z kontrolera…</div>
+      </div>
+    </td>
+  </tr>
+</tbody>
+
+<script>
+(function () {
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  window.ussTileRefresh = function () {
+    var body = document.getElementById('uss-tile-body');
+    var sub = document.getElementById('uss-tile-subtitle');
+    body.innerHTML = '<div class="uss-tile-empty">Odświeżanie…</div>';
+    fetch('/plugins/unifi-site-scan/scripts/scan.php')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.ok) {
+          sub.textContent = 'Błąd';
+          sub.className = 'red-text';
+          body.innerHTML = '<div class="uss-tile-error">' + esc(d.error) + '</div>';
+          return;
+        }
+        var totalClients = 0, totalAp = 0, ssidTotals = {};
+        d.sites.forEach(function (s) {
+          totalClients += s.num_clients;
+          totalAp += s.num_ap;
+          s.ssids.forEach(function (ss) {
+            ssidTotals[ss.ssid] = (ssidTotals[ss.ssid] || 0) + ss.count;
+          });
+        });
+        sub.textContent = d.sites.length + ' site · ' + totalClients + ' klientów';
+        sub.className = 'green-text';
+
+        var html = '<div class="uss-tile-stats">' +
+          '<div class="uss-tile-stat"><div class="num">' + d.sites.length + '</div><div class="lbl">Site</div></div>' +
+          '<div class="uss-tile-stat"><div class="num">' + totalAp + '</div><div class="lbl">AP</div></div>' +
+          '<div class="uss-tile-stat"><div class="num">' + totalClients + '</div><div class="lbl">Klienci</div></div>' +
+          '</div>';
+        var ssidKeys = Object.keys(ssidTotals);
+        if (ssidKeys.length) {
+          html += '<div class="uss-tile-ssids">';
+          ssidKeys.forEach(function (ssid) {
+            html += '<span class="uss-tile-ssid-pill">' + esc(ssid) + ' <b>' + ssidTotals[ssid] + '</b></span>';
+          });
+          html += '</div>';
+        }
+        html += '<div class="uss-tile-updated">' + new Date().toLocaleTimeString('pl-PL') + '</div>';
+        body.innerHTML = html;
+      })
+      .catch(function (e) {
+        sub.textContent = 'Błąd';
+        sub.className = 'red-text';
+        body.innerHTML = '<div class="uss-tile-error">Błąd połączenia: ' + e + '</div>';
+      });
+  };
+
+  ussTileRefresh();
+  setInterval(ussTileRefresh, 60000);
+})();
+</script>
