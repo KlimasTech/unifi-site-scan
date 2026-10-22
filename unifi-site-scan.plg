@@ -1,0 +1,77 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name        "unifi-site-scan">
+<!ENTITY author      "KlimasTech">
+<!ENTITY version     "2026.10.22">
+<!ENTITY launch      "Utilities/unifi-site-scan">
+<!ENTITY pluginURL   "https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg">
+<!ENTITY packageURL  "https://github.com/KlimasTech/unifi-site-scan/releases/download/&version;/unifi-site-scan-&version;.txz">
+<!ENTITY packageMD5  "fa82dc96c8c8e16ed47c03624c053e1c">
+<!ENTITY pluginLOC   "/boot/config/plugins/&name;">
+<!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;"
+        author="&author;"
+        version="&version;"
+        launch="&launch;"
+        pluginURL="&pluginURL;"
+        icon="wifi"
+        min="6.9.0"
+        support="https://github.com/KlimasTech/unifi-site-scan/issues"
+        project="https://github.com/KlimasTech/unifi-site-scan"
+        readme="https://github.com/KlimasTech/unifi-site-scan#readme"
+>
+
+<CHANGES>
+### &version;
+- Pierwsze wydanie: dashboard site/SSID/klientów UniFi, ustawienia połączenia, wybór widocznych site/SSID
+</CHANGES>
+
+<!-- PRE-INSTALL -->
+<FILE Run="/bin/bash">
+<INLINE>
+mkdir -p &pluginLOC;
+rm -f $(ls &pluginLOC;/*.txz 2>/dev/null)
+</INLINE>
+</FILE>
+
+<!-- INSTALACJA PACZKI -->
+<FILE Name="&pluginLOC;/unifi-site-scan-&version;.txz" Run="upgradepkg --install-new">
+<URL>&packageURL;</URL>
+<MD5>&packageMD5;</MD5>
+</FILE>
+
+<!-- POST-INSTALL -->
+<FILE Run="/bin/bash">
+<INLINE>
+mkdir -p &pluginLOC;
+if [ ! -f &pluginLOC;/&name;.cfg ]; then
+  cp &emhttpLOC;/default.cfg &pluginLOC;/&name;.cfg 2>/dev/null || true
+fi
+echo ""
+echo "-------------------------------------------"
+echo " UniFi Site Scan &version; zainstalowany."
+echo " Konfiguracja: Settings -> Utilities -> UniFi Site Scan"
+echo "-------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+<!-- AKTUALIZACJA: wyczyść starą wersję przed reinstalacją -->
+<FILE Run="/bin/bash" Method="update">
+<INLINE>
+rm -rf &emhttpLOC;
+</INLINE>
+</FILE>
+
+<!-- USUWANIE -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+removepkg unifi-site-scan-&version;
+rm -rf &emhttpLOC;
+rm -rf &pluginLOC;
+</INLINE>
+</FILE>
+
+</PLUGIN>
