@@ -2,52 +2,43 @@ Menu="Dashboard"
 ---
 <?php
 $plugin = 'unifi-site-scan';
-$unraidVersionFile = '/etc/unraid-version';
-$isResponsive = true;
-if (file_exists($unraidVersionFile)) {
-    $v = @parse_ini_file($unraidVersionFile);
-    if (is_array($v) && isset($v['version'])) {
-        $isResponsive = version_compare($v['version'], '7.2.0-beta', '>=');
-    }
-}
 ?>
 <style>
-.uss-tile-body { padding: 4px 2px 10px; }
-.uss-tile-stats { display: flex; gap: 10px; margin-bottom: 10px; }
-.uss-tile-stat { flex: 1; background: rgba(90,176,255,.08); border: 1px solid rgba(90,176,255,.18);
+#uss-native-tbody .uss-tile-body { padding: 4px 8px 8px; }
+#uss-native-tbody .uss-tile-stats { display: flex; gap: 10px; margin-bottom: 8px; }
+#uss-native-tbody .uss-tile-stat { flex: 1; background: rgba(90,176,255,.08); border: 1px solid rgba(90,176,255,.18);
   border-radius: 8px; padding: 8px 10px; text-align: center; }
-.uss-tile-stat .num { font-size: 20px; font-weight: 700; color: #5ab0ff; line-height: 1.1; }
-.uss-tile-stat .lbl { font-size: 10.5px; color: #8993a4; text-transform: uppercase; letter-spacing: .03em; margin-top: 2px; }
-.uss-tile-ssids { display: flex; flex-wrap: wrap; gap: 6px; }
-.uss-tile-ssid-pill { background: #232b37; color: #aab3c2; font-size: 11px; padding: 3px 9px; border-radius: 10px; }
-.uss-tile-ssid-pill b { color: #cfe3ff; }
-.uss-tile-empty, .uss-tile-error { font-size: 12px; color: #8993a4; padding: 6px 2px; }
-.uss-tile-error { color: #ff8080; }
-.uss-tile-updated { font-size: 10.5px; color: #6b7585; margin-top: 8px; text-align: right; }
+#uss-native-tbody .uss-tile-stat .num { font-size: 20px; font-weight: 700; color: #5ab0ff; line-height: 1.1; }
+#uss-native-tbody .uss-tile-stat .lbl { font-size: 10.5px; color: #8993a4; text-transform: uppercase; letter-spacing: .03em; margin-top: 2px; }
+#uss-native-tbody .uss-tile-ssids { display: flex; flex-wrap: wrap; gap: 6px; }
+#uss-native-tbody .uss-tile-ssid-pill { background: #232b37; color: #aab3c2; font-size: 11px; padding: 3px 9px; border-radius: 10px; }
+#uss-native-tbody .uss-tile-ssid-pill b { color: #cfe3ff; }
+#uss-native-tbody .uss-tile-empty, #uss-native-tbody .uss-tile-error { font-size: 12px; color: #8993a4; padding: 6px 2px; }
+#uss-native-tbody .uss-tile-error { color: #ff8080; }
+#uss-native-tbody .uss-subtitle.green-text { color: #6bcb7a; }
+#uss-native-tbody .uss-subtitle.red-text { color: #ff8080; }
 </style>
 
-<tbody title='<?=$plugin?>'>
+<script id="uss-template" type="text/template">
+<tbody id='uss-native-tbody' title='<?=$plugin?>' class='sortable' sort='uss-dashboard-tile-001'>
   <tr>
     <td>
       <span class='tile-header'>
         <span class='tile-header-left'>
           <i class='fa fa-wifi f32'></i>
           <div class='section'>
-            <? if ($isResponsive): ?>
-              <h3 class='tile-header-main'>UniFi Site Scan</h3>
-              <span id='uss-tile-subtitle'>Ładowanie…</span>
-            <? else: ?>
-              UniFi Site Scan<br>
-              <span id='uss-tile-subtitle'>Ładowanie…</span><br>
-            <? endif; ?>
+            <h3 class='tile-header-main'>UniFi Site Scan</h3>
+            <span id='uss-tile-subtitle' class='uss-subtitle'>Ładowanie…</span>
           </div>
         </span>
         <span class='tile-header-right'>
-          <span class='tile-ctrl'>
-            <span class='fa fa-refresh hand' title='Odśwież' onclick='ussTileRefresh()'></span>
-          </span>
           <span class='tile-header-right-controls'>
-            <a href='/Settings/<?=$plugin?>' title='Ustawienia'><i class='fa fa-cog control'></i></a>
+            <a href='#' onclick='ussTileRefresh();return false;' title='Odśwież'>
+              <i class='fa fa-fw fa-refresh control'></i>
+            </a>
+            <a href='/Settings/UnifiSiteScan' title='Ustawienia'>
+              <i class='fa fa-fw fa-cog control'></i>
+            </a>
           </span>
         </span>
       </span>
@@ -61,34 +52,53 @@ if (file_exists($unraidVersionFile)) {
     </td>
   </tr>
 </tbody>
+</script>
 
 <script>
 (function () {
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+  // wstrzyknij naszą tbody do wspólnej tabeli dashboardu (ten sam kontener co kafelki systemowe),
+  // zamiast renderowac sie jako osobny blok na cala szerokosc strony
+  function mountTile() {
+    if (document.getElementById('uss-native-tbody')) { return true; }
+    var box = document.getElementById('db_box1') || document.querySelector('table.dashboard');
+    if (!box) { return false; }
+    var tpl = document.getElementById('uss-template');
+    box.insertAdjacentHTML('beforeend', tpl.innerHTML.trim());
+    return true;
+  }
+
   window.ussTileRefresh = function () {
     var body = document.getElementById('uss-tile-body');
     var sub = document.getElementById('uss-tile-subtitle');
+    if (!body || !sub) { return; }
     body.innerHTML = '<div class="uss-tile-empty">Odświeżanie…</div>';
-    fetch('/plugins/unifi-site-scan/scripts/scan.php')
-      .then(function (r) { return r.json(); })
+    fetch('/plugins/unifi-site-scan/scripts/scan.php?filtered=1')
+      .then(function (r) {
+        return r.text().then(function (text) {
+          if (!text) { throw new Error('Pusta odpowiedź (HTTP ' + r.status + ') — sesja WebGUI mogła wygasnąć.'); }
+          try { return JSON.parse(text); }
+          catch (e) { throw new Error('Nieprawidłowa odpowiedź (HTTP ' + r.status + ')'); }
+        });
+      })
       .then(function (d) {
         if (!d.ok) {
           sub.textContent = 'Błąd';
-          sub.className = 'red-text';
+          sub.className = 'uss-subtitle red-text';
           body.innerHTML = '<div class="uss-tile-error">' + esc(d.error) + '</div>';
           return;
         }
         var totalClients = 0, totalAp = 0, ssidTotals = {};
         d.sites.forEach(function (s) {
-          totalClients += s.num_clients;
           totalAp += s.num_ap;
           s.ssids.forEach(function (ss) {
+            totalClients += ss.count;
             ssidTotals[ss.ssid] = (ssidTotals[ss.ssid] || 0) + ss.count;
           });
         });
         sub.textContent = d.sites.length + ' site · ' + totalClients + ' klientów';
-        sub.className = 'green-text';
+        sub.className = 'uss-subtitle green-text';
 
         var html = '<div class="uss-tile-stats">' +
           '<div class="uss-tile-stat"><div class="num">' + d.sites.length + '</div><div class="lbl">Site</div></div>' +
@@ -103,17 +113,29 @@ if (file_exists($unraidVersionFile)) {
           });
           html += '</div>';
         }
-        html += '<div class="uss-tile-updated">' + new Date().toLocaleTimeString('pl-PL') + '</div>';
         body.innerHTML = html;
       })
       .catch(function (e) {
         sub.textContent = 'Błąd';
-        sub.className = 'red-text';
-        body.innerHTML = '<div class="uss-tile-error">Błąd połączenia: ' + e + '</div>';
+        sub.className = 'uss-subtitle red-text';
+        body.innerHTML = '<div class="uss-tile-error">' + esc(e.message || String(e)) + '</div>';
       });
   };
 
-  ussTileRefresh();
-  setInterval(ussTileRefresh, 60000);
+  function init() {
+    if (!mountTile()) {
+      // tabela dashboardu moze jeszcze nie istnieć w DOM - sprobuj ponownie za chwile
+      setTimeout(init, 300);
+      return;
+    }
+    ussTileRefresh();
+    setInterval(ussTileRefresh, 60000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>

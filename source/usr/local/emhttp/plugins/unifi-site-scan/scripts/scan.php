@@ -52,6 +52,26 @@ try {
     $client = new UnifiClient($host, $port, $user, $pass);
     $sites = $client->scan();
 
+    // Dashboard filtruje wg zapisanego wyboru w Ustawieniach (pusta lista = pokaz wszystko).
+    // Settings/skan-do-checkboxow NIE filtruje (potrzebuje pelnej listy), dlatego tylko ?filtered=1.
+    if (!empty($_GET['filtered'])) {
+        $selSites = array_filter(array_map('trim', explode(',', $cfg['SELECTED_SITES'] ?? '')));
+        $selSsids = array_filter(array_map('trim', explode(',', $cfg['SELECTED_SSIDS'] ?? '')));
+        if ($selSites) {
+            $sites = array_values(array_filter($sites, function ($s) use ($selSites) {
+                return in_array($s['name'], $selSites, true);
+            }));
+        }
+        if ($selSsids) {
+            foreach ($sites as &$s) {
+                $s['ssids'] = array_values(array_filter($s['ssids'], function ($ss) use ($selSsids) {
+                    return in_array($ss['ssid'], $selSsids, true);
+                }));
+            }
+            unset($s);
+        }
+    }
+
     while (ob_get_level() > 0) {
         ob_end_clean();
     }

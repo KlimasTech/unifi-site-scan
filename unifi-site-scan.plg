@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "unifi-site-scan">
 <!ENTITY author      "KlimasTech">
-<!ENTITY version     "2026.10.22.2">
+<!ENTITY version     "2026.10.24">
 <!ENTITY launch      "Utilities/unifi-site-scan">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg">
 <!ENTITY packageURL  "https://github.com/KlimasTech/unifi-site-scan/releases/download/&version;/unifi-site-scan-&version;.txz">
-<!ENTITY packageMD5  "a10830f302e91a81be546b3e63a00728">
+<!ENTITY packageMD5  "93cb6bbaa610ea57e8f232adf93dba85">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
 <!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
 ]>
@@ -25,6 +25,13 @@
 
 <CHANGES>
 ### &version;
+- Kafelek Dashboard: montowany bezpośrednio we wspólnej tabeli `#db_box1` (jak natywne kafelki unRAID), nie jako osobny blok na całą szerokość strony
+- Kafelek liczy klientów po SSID (nie po site), poprawiając rozjazd z sumą widoczną w rozwinięciu
+- Dashboard filtruje wg zapisanych w Ustawieniach wyborów site/SSID (`scan.php?filtered=1`); endpoint Ustawień (skan do checkboxów) nadal zwraca pełną, nieprzefiltrowaną listę
+- Strona Ustawień przeniesiona z `unifi-site-scan.page` do `UnifiSiteScan.page` (zgodnie z konwencją nazewnictwa plików stron unRAID) — link kafelka zaktualizowany na `/Settings/UnifiSiteScan`
+- Usunięto nieużywany kod wykrywania wersji responsywnego WebGUI (7.2+) z kafelka Dashboard
+
+### 2026.10.22.2
 - Dodano kafelek na głównym Dashboardzie unRAID (zgodnie ze standardem innych pluginów: ikona ⚙️ w rogu linkuje do Ustawień)
 - Utwardzono scripts/save.php i scripts/scan.php na błędy PHP — zawsze zwracają poprawny JSON zamiast pustej odpowiedzi (naprawia "Unexpected end of JSON input" po zapisie ustawień)
 

@@ -64,7 +64,7 @@ Po instalacji: **Settings → Utilities → UniFi Site Scan**.
 
 ```
 source/usr/local/emhttp/plugins/unifi-site-scan/
-├── unifi-site-scan.page     # strona WebGUI (Dashboard + Ustawienia, PHP+HTML+JS+CSS)
+├── UnifiSiteScan.page       # strona WebGUI Ustawień (PHP+HTML+JS+CSS)
 ├── default.cfg               # domyślna konfiguracja
 ├── include/
 │   └── UnifiClient.php       # klient API kontrolera (login, stat/sites, stat/sta)
