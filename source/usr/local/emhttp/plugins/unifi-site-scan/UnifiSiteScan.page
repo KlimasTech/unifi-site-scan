@@ -174,7 +174,7 @@ $csrfToken = is_array($varIni) ? ($varIni['csrf_token'] ?? '') : '';
         try {
           return JSON.parse(text);
         } catch (e) {
-          if (/<html|<!doctype/i.test(text)) {
+          if (text.trim().charAt(0) === '<') {
             throw new Error('Serwer zwrócił stronę HTML zamiast danych (HTTP ' + r.status + ') — prawdopodobnie wygasła sesja WebGUI. Odśwież stronę i zaloguj się ponownie.');
           }
           throw new Error('Nieprawidłowa odpowiedź serwera (HTTP ' + r.status + '): ' + text.slice(0, 200));

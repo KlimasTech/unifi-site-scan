@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "unifi-site-scan">
 <!ENTITY author      "KlimasTech">
-<!ENTITY version     "2026.10.24">
+<!ENTITY version     "2026.10.24a">
 <!ENTITY launch      "Utilities/unifi-site-scan">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg">
 <!ENTITY packageURL  "https://github.com/KlimasTech/unifi-site-scan/releases/download/&version;/unifi-site-scan-&version;.txz">
-<!ENTITY packageMD5  "93cb6bbaa610ea57e8f232adf93dba85">
+<!ENTITY packageMD5  "64d22b1f018fbe5c3fca0a257910ada7">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
 <!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
 ]>
@@ -25,6 +25,9 @@
 
 <CHANGES>
 ### &version;
+- **Krytyczna poprawka**: przycisk "Zapisz"/"Skanuj" w Ustawieniach w ogóle nie działał od samego pierwszego wydania — parser Markdown unRAID (webGUI Settings) rozpoznawał dosłowny tekst `<html`/`<!doctype` wewnątrz kodu JS jako początek nowego bloku HTML i przerywał "ochronę" tagu `<script>`, przez co cały skrypt renderował się jako martwy tekst zamiast wykonywalnego kodu. Zamieniono wykrywanie odpowiedzi HTML na bezpieczne sprawdzenie pierwszego znaku (bez literalnych tagów w kodzie źródłowym).
+
+### 2026.10.24
 - Kafelek Dashboard: montowany bezpośrednio we wspólnej tabeli `#db_box1` (jak natywne kafelki unRAID), nie jako osobny blok na całą szerokość strony
 - Kafelek liczy klientów po SSID (nie po site), poprawiając rozjazd z sumą widoczną w rozwinięciu
 - Dashboard filtruje wg zapisanych w Ustawieniach wyborów site/SSID (`scan.php?filtered=1`); endpoint Ustawień (skan do checkboxów) nadal zwraca pełną, nieprzefiltrowaną listę
