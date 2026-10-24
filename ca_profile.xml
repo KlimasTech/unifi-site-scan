@@ -1,0 +1,9 @@
+<CommunityApplications>
+  <Profile>
+UniFi Site Scan is a plugin that scans one or more UniFi Network controllers (sites/SSIDs) and shows live client-count and connectivity stats as a native Unraid Dashboard tile, with a Settings page to pick which sites/SSIDs to track and test the connection.
+
+Maintained by KlimasTech. For support, use the forum thread linked below.
+  </Profile>
+  <WebPage>https://github.com/KlimasTech/unifi-site-scan</WebPage>
+  <Forum>https://forums.unraid.net/topic/REPLACE_WITH_YOUR_SUPPORT_TOPIC_ID</Forum>
+</CommunityApplications>

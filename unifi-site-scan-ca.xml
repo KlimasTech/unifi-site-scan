@@ -1,0 +1,8 @@
+<Plugin>
+  <Name>UniFi Site Scan</Name>
+  <PluginURL>https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg</PluginURL>
+  <Support>https://forums.unraid.net/topic/REPLACE_WITH_YOUR_SUPPORT_TOPIC_ID</Support>
+  <Project>https://github.com/KlimasTech/unifi-site-scan</Project>
+  <Overview>Scans UniFi Network controller sites/SSIDs and shows live client-count/connectivity stats as a native Unraid Dashboard tile, with a Settings page to select which sites/SSIDs to track.</Overview>
+  <Category>Tools:Utilities</Category>
+</Plugin>
