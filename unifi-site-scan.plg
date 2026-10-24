@@ -25,7 +25,7 @@
 
 <CHANGES>
 ### &version;
-- **Krytyczna poprawka**: przycisk "Zapisz"/"Skanuj" w Ustawieniach w ogóle nie działał od samego pierwszego wydania — parser Markdown unRAID (webGUI Settings) rozpoznawał dosłowny tekst `<html`/`<!doctype` wewnątrz kodu JS jako początek nowego bloku HTML i przerywał "ochronę" tagu `<script>`, przez co cały skrypt renderował się jako martwy tekst zamiast wykonywalnego kodu. Zamieniono wykrywanie odpowiedzi HTML na bezpieczne sprawdzenie pierwszego znaku (bez literalnych tagów w kodzie źródłowym).
+- **Krytyczna poprawka**: przycisk "Zapisz"/"Skanuj" w Ustawieniach w ogóle nie działał od samego pierwszego wydania — parser Markdown unRAID (webGUI Settings) rozpoznawał dosłowny tekst "html"/"doctype" wewnątrz kodu JS jako początek nowego bloku HTML i przerywał "ochronę" tagu script, przez co cały skrypt renderował się jako martwy tekst zamiast wykonywalnego kodu. Zamieniono wykrywanie odpowiedzi HTML na bezpieczne sprawdzenie pierwszego znaku (bez literalnych tagów w kodzie źródłowym).
 
 ### 2026.10.24
 - Kafelek Dashboard: montowany bezpośrednio we wspólnej tabeli `#db_box1` (jak natywne kafelki unRAID), nie jako osobny blok na całą szerokość strony
