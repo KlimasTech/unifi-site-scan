@@ -4,6 +4,6 @@ UniFi Site Scan is a plugin that scans one or more UniFi Network controllers (si
 
 Maintained by KlimasTech. For support, use the forum thread linked below.
   </Profile>
-  <WebPage></WebPage>
-  <Forum></Forum>
+  <WebPage>https://github.com/KlimasTech/unifi-site-scan</WebPage>
+  <Forum>https://forums.unraid.net/topic/201036-plugin-unifi-site-scan-multi-site-client-count-dashboard-tile/</Forum>
 </CommunityApplications>
