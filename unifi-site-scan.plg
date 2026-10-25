@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "unifi-site-scan">
 <!ENTITY author      "KlimasTech">
-<!ENTITY version     "2026.10.24a">
-<!ENTITY launch      "Utilities/unifi-site-scan">
+<!ENTITY version     "2026.10.25a">
+<!ENTITY launch      "Settings/UnifiSiteScan">
 <!ENTITY pluginURL   "https://raw.githubusercontent.com/KlimasTech/unifi-site-scan/main/unifi-site-scan.plg">
 <!ENTITY packageURL  "https://github.com/KlimasTech/unifi-site-scan/releases/download/&version;/unifi-site-scan-&version;.txz">
-<!ENTITY packageMD5  "64d22b1f018fbe5c3fca0a257910ada7">
+<!ENTITY packageMD5  "851047f3ec40b5dd021e90e7b67c5bac">
 <!ENTITY pluginLOC   "/boot/config/plugins/&name;">
 <!ENTITY emhttpLOC   "/usr/local/emhttp/plugins/&name;">
 ]>
@@ -25,6 +25,12 @@
 
 <CHANGES>
 ### &version;
+- Naprawiono blad: kliknieko ikonki wtyczki na stronie Wtyczki (Plugins) przenosilo pod zly
+  URL ("/Utilities/unifi-site-scan") i ladowalo pusta strone (blad wystepowal dla KAZDEGO
+  konta, wlacznie z prawdziwym rootem). Poprawiono atrybut "launch" w .plg na poprawny adres
+  strony ustawien ("/Settings/UnifiSiteScan")
+
+### 2026.10.24a
 - **Krytyczna poprawka**: przycisk "Zapisz"/"Skanuj" w Ustawieniach w ogóle nie działał od samego pierwszego wydania — parser Markdown unRAID (webGUI Settings) rozpoznawał dosłowny tekst "html"/"doctype" wewnątrz kodu JS jako początek nowego bloku HTML i przerywał "ochronę" tagu script, przez co cały skrypt renderował się jako martwy tekst zamiast wykonywalnego kodu. Zamieniono wykrywanie odpowiedzi HTML na bezpieczne sprawdzenie pierwszego znaku (bez literalnych tagów w kodzie źródłowym).
 
 ### 2026.10.24
