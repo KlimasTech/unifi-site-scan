@@ -4,9 +4,6 @@ Plugin do unRAID OS wyświetlający w WebGUI listę site'ów, SSID i aktywnych
 klientów z Twojego kontrolera UniFi Network — klasycznego, samodzielnego
 (nie UniFi OS/UDM).
 
-![Dashboard](docs/screenshots/dashboard.png)
-![Ustawienia](docs/screenshots/settings.png)
-
 ## Funkcje
 
 - **Dashboard** — eleganckie karty per site: liczba AP, liczba klientów,
