@@ -140,7 +140,7 @@ class UnifiClient
             $result[] = [
                 'name' => $name,
                 'desc' => $desc,
-                'num_ap' => $wlanHealth['num_adopted'] ?? 0,
+                'num_ap' => (int) ($wlanHealth['num_adopted'] ?? 0),
                 'num_clients' => count($clients),
                 'ssids' => array_values($ssidMap),
             ];
