@@ -22,7 +22,18 @@ class UnifiClient
         $this->baseUrl = 'https://' . $host . ':' . intval($port);
         $this->username = $username;
         $this->password = $password;
-        $this->cookieFile = '/tmp/unifi-site-scan-' . md5($host . $username) . '.cookies';
+        $cookieFile = tempnam(sys_get_temp_dir(), 'uss');
+        if ($cookieFile === false) {
+            throw new Exception('Nie udało się utworzyć pliku sesji');
+        }
+        $this->cookieFile = $cookieFile;
+    }
+
+    public function __destruct()
+    {
+        if ($this->cookieFile && is_file($this->cookieFile)) {
+            unlink($this->cookieFile);
+        }
     }
 
     private function curl($path, $method = 'GET', $body = null)
@@ -140,7 +151,7 @@ class UnifiClient
             $result[] = [
                 'name' => $name,
                 'desc' => $desc,
-                'num_ap' => $wlanHealth['num_adopted'] ?? 0,
+                'num_ap' => (int) ($wlanHealth['num_adopted'] ?? 0),
                 'num_clients' => count($clients),
                 'ssids' => array_values($ssidMap),
             ];

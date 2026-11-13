@@ -55,7 +55,8 @@
 <FILE Run="/bin/bash">
 <INLINE>
 mkdir -p &pluginLOC;
-rm -f $(ls &pluginLOC;/*.txz 2>/dev/null)
+# remove only older versions; the current package must stay on the flash for the next boot
+find &pluginLOC; -maxdepth 1 -name '*.txz' ! -name '&name;-&version;.txz' -delete
 </INLINE>
 </FILE>
 

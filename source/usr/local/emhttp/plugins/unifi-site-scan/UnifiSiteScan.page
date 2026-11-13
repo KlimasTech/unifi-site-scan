@@ -221,7 +221,7 @@ $csrfToken = is_array($varIni) ? ($varIni['csrf_token'] ?? '') : '';
         html += '<div class="uss-ssid-list">';
         site.ssids.forEach(function (s) {
           var ssidChecked = USS.selectedSsids.length === 0 || USS.selectedSsids.indexOf(s.ssid) !== -1;
-          html += '<label><input type="checkbox" class="uss-ssid-cb" data-site="' + site.name + '" data-ssid="' + esc(s.ssid) + '"' + (ssidChecked ? ' checked' : '') + '> ' +
+          html += '<label><input type="checkbox" class="uss-ssid-cb" data-site="' + esc(site.name) + '" data-ssid="' + esc(s.ssid) + '"' + (ssidChecked ? ' checked' : '') + '> ' +
                   esc(s.ssid) + ' (' + s.count + ')</label>';
         });
         html += '</div>';
